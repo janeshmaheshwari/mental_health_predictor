@@ -119,9 +119,43 @@ def main():
     st.title("🧠 Lifestyle & Mental Health Predictor")
     st.caption("Get feedback based on your daily habits. This does not replace a clinical diagnosis.")
 
+     # === STEP A: Ensure DB exists and has needed table structure ===
+    from pathlib import Path
+    import sqlite3
+    if not Path("mental_health.db").exists():
+        conn = sqlite3.connect("mental_health.db")
+        conn.execute("""
+            CREATE TABLE IF NOT EXISTS responses (
+                timestamp TEXT, source TEXT,
+                "Age" TEXT, Gender TEXT, "Educational Level" TEXT, "Employment Status" TEXT,
+                "How many hours do you sleep per day (on average)?" TEXT,
+                "How many hours do you use mobile, computer, or TV daily?" TEXT,
+                "If you work or study, how many hours do you do so daily?" TEXT,
+                "Do you engage in any physical activity (e.g., walking, gym, yoga) daily?" TEXT,
+                "Do you usually use screens after 10 PM at night?" TEXT,
+                "How would you rate your caffeine intake?" TEXT,
+                "How many meals do you eat per day (on average)?" TEXT,
+                "Self Esteem" TEXT,
+                Depression TEXT, Anxiety TEXT, Insomnia TEXT, "Social Anxiety" TEXT, "Psychotic Symptoms" TEXT
+            );
+        """)
+        conn.close()
+    # === END STEP A ===
+
+    # Load and preprocess data
     raw_df = load_data()
     model, scaler, features, df, trainable_labels = preprocess(raw_df)
     model_ready = model is not None
+
+    # === STEP B: Diagnostics—display data & types ===
+    st.write("🔍 **Diagnostics**")
+    st.write("Loaded rows:", len(df))
+    st.write("Label counts:")
+    st.write(df[LABEL_COLS].apply(lambda col: col.value_counts(dropna=False)))
+    st.write("Label data types:")
+    st.write(df[LABEL_COLS].dtypes)
+    st.markdown("---")
+    # === END STEP B ===
 
     if model_ready:
         st.success("✅ Model trained successfully.")
