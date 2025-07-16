@@ -89,7 +89,7 @@ IEEE EMBS Pune Internship 2025
 
 ## 🙏 Acknowledgements
 
-- Guided by [Mentor Name]
+- Guided by Dr. A Naresh Kumar
 - Developed under IEEE EMBS Pune Internship Program
 - Thanks to all contributors and test users
 
